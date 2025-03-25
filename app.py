@@ -10,10 +10,10 @@ custom_items_config = {
     "COOLING TOWEL": ["HAVE", "NEED"]
 }
 
-# --- Embedded Real Item Lists ---
-list1_items = ['SMART LEVEL ', "6' LEVEL", 'MEASURING WHEEL ', '1" % GUAGE ', 'HAMMER CLAW / SLEDGE', 'MEASURING TAPE', 'THEMOMETER', 'BLANK', 'RUBBER BOOTS', "6' FOLDING RULE ", 'HARD HAT SUN VISOR', 'TYPE CUSTOM HERE', 'TAPE MEASURE', 'SAFETY BELT ', 'HARD HAT', 'GLOVES 2 TYPES', 'SAFETY GLASSES', 'STRING LINE', 'CHAINING PINS', 'PAINT WAND', 'CLEANING SPRAY TOWELS', 'SMART LEVEL BATTERIES', 'SUNGLASSES ', 'HIGH VIS WINTER JACKET/COAT', 'HIGH VIS / REFLECTIVE RAIN SUIT', 'HIGH VIS JACKET ', 'SHOVELS ', '12" ENGINEERING SCALE', 'BROOM', 'LOGITECH BLUETOOTH MOUSE']
-list2_items = ['PENS/HIGHLIGHTERS/PENICLS', 'TABLETS SMALL / LARGE ', 'STICKY NOTES /  PAGE TABS', 'PAPER CLIPS / BINDER CLIPS', 'BINDER / FOLDERS / PAGE DIVIDERS', 'GRADES BOOKLET', 'EAR PLUGS / EAR PROTECTION', 'BUG SPRAY ', 'WHITE OUT', 'SHEET PROTECTORS', 'GATORADE POWDER', 'GOJO HAND CLEANER', 'APPLE IPHONE CHARGER / CABLE', 'GLOVE SIZE ', 'VEST SIZE', 'JACKET SIZE ']
-dropdown_options = ['HAVE', 'LARGE', 'MED', 'XL']
+# --- Cleaned Embedded Item Lists ---
+list1_items = ['SMART LEVEL', "6' LEVEL", 'MEASURING WHEEL', '1" % GUAGE', 'HAMMER CLAW / SLEDGE', 'MEASURING TAPE', 'THEMOMETER', 'BLANK', 'RUBBER BOOTS', "6' FOLDING RULE", 'HARD HAT SUN VISOR', 'TYPE CUSTOM HERE', 'TAPE MEASURE', 'SAFETY BELT', 'HARD HAT', 'GLOVES 2 TYPES', 'SAFETY GLASSES', 'STRING LINE', 'CHAINING PINS', 'PAINT WAND', 'CLEANING SPRAY TOWELS', 'SMART LEVEL BATTERIES', 'SUNGLASSES', 'HIGH VIS WINTER JACKET/COAT', 'HIGH VIS / REFLECTIVE RAIN SUIT', 'HIGH VIS JACKET', 'SHOVELS', '12" ENGINEERING SCALE', 'BROOM', 'LOGITECH BLUETOOTH MOUSE']
+list2_items = ['PENS/HIGHLIGHTERS/PENICLS', 'TABLETS SMALL / LARGE', 'STICKY NOTES /  PAGE TABS', 'PAPER CLIPS / BINDER CLIPS', 'BINDER / FOLDERS / PAGE DIVIDERS', 'GRADES BOOKLET', 'EAR PLUGS / EAR PROTECTION', 'BUG SPRAY', 'WHITE OUT', 'SHEET PROTECTORS', 'GATORADE POWDER', 'GOJO HAND CLEANER', 'APPLE IPHONE CHARGER / CABLE', 'GLOVE SIZE', 'VEST SIZE', 'JACKET SIZE', 'SMART LEVEL BATT TYPE', 'COOLING TOWEL', 'Type Custom Here', 'RUNNING BOARDS', 'HEADACHE RACK', 'TOOL BOX', 'LIGHTBAR /CONTROL BOX', 'TRUCK MODEL YEAR?']
+dropdown_options = ['2018', 'AAA', 'HAVE', 'LARGE', 'MED', 'XL']
 
 st.title("Inspector Request Form")
 
@@ -29,15 +29,15 @@ st.header("Request Items")
 st.subheader("List 1 Items")
 list1_selections = {}
 for item in list1_items:
-    choice = st.selectbox(f"{item.strip()}", options=dropdown_options, key=f"list1_{item}")
-    list1_selections[item.strip()] = choice
+    choice = st.selectbox(f"{item}", options=dropdown_options, key=f"list1_{item}")
+    list1_selections[item] = choice
 
 # --- List 2 ---
 st.subheader("List 2 Items")
 list2_selections = {}
 for item in list2_items:
-    choice = st.selectbox(f"{item.strip()}", options=dropdown_options, key=f"list2_{item}")
-    list2_selections[item.strip()] = choice
+    choice = st.selectbox(f"{item}", options=dropdown_options, key=f"list2_{item}")
+    list2_selections[item] = choice
 
 # --- Manual Items (Optional) ---
 st.subheader("Additional Manual Items")
