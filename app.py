@@ -96,9 +96,12 @@ def generate_pdf(name, date, notes, list1, list2, customs):
     return pdf
 
 # --- Download Button ---
-if st.button("📄 Download PDF Receipt"):
-    pdf = generate_pdf(name, date, notes, list1_selections, list2_selections, custom_items)
-    pdf_output = "inspector_request.pdf"
-    pdf.output(pdf_output)
-    with open(pdf_output, "rb") as f:
-        st.download_button("Download PDF", f, file_name=pdf_output)
+from io import BytesIO
+
+pdf_buffer = BytesIO()
+pdf = generate_pdf(name, date, notes, list1_selections, list2_selections, custom_items)
+pdf.output(pdf_buffer)
+pdf_buffer.seek(0)
+
+file_name = f"{name.lower().replace(' ', '_')}.request.{date.strftime('%Y-%m-%d')}.pdf"
+st.download_button("📄 Download PDF Receipt", data=pdf_buffer, file_name=file_name, mime="application/pdf")
