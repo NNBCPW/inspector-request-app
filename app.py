@@ -96,7 +96,7 @@ def generate_pdf(name, date, notes, list1, list2, customs):
 
 # --- Notes Field (Now at Bottom) ---
 st.subheader("Additional Notes")
-notes = st.text_area("Type any extra notes here")
+notes = st.text_area("Type any extra items or notes here")
 
 # --- Download Button ---
 pdf = generate_pdf(name, date, notes, list1_selections, list2_selections, custom_items)
