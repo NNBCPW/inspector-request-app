@@ -23,7 +23,6 @@ st.title("Inspector Request Form")
 # --- Moved Name/Date/Notes into main body for mobile compatibility ---
 name = st.text_input("Your Name")
 date = st.date_input("Date", value=datetime.today())
-notes = st.text_area("Additional Notes")
 
 st.header("Request Items")
 
@@ -96,11 +95,11 @@ def generate_pdf(name, date, notes, list1, list2, customs):
 
 # --- Notes Field (Now at Bottom) ---
 st.subheader("Additional Notes")
-notes = st.text_area("Type any extra items or notes here")
+notes = st.text_area("Type any extra notes here")
 
 # --- Download Button ---
 pdf = generate_pdf(name, date, notes, list1_selections, list2_selections, custom_items)
 pdf_bytes = pdf.output(dest='S').encode('latin-1')
 
 file_name = f"{name.lower().replace(' ', '_')}.request.{date.strftime('%Y-%m-%d')}.pdf"
-st.download_button(" Click 📄 Download, save, then email PDF Receipt", data=pdf_bytes, file_name=file_name, mime="application/pdf")
+st.download_button("📄 Click to Download a PDF Receipt To save and email", data=pdf_bytes, file_name=file_name, mime="application/pdf")
