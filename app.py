@@ -103,4 +103,4 @@ pdf = generate_pdf(name, date, notes, list1_selections, list2_selections, custom
 pdf_bytes = pdf.output(dest='S').encode('latin-1')
 
 file_name = f"{name.lower().replace(' ', '_')}.request.{date.strftime('%Y-%m-%d')}.pdf"
-st.download_button("📄 Download PDF Receipt", data=pdf_bytes, file_name=file_name, mime="application/pdf")
+st.download_button(" Click 📄 Download, save, then email PDF Receipt", data=pdf_bytes, file_name=file_name, mime="application/pdf")
