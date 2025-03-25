@@ -18,7 +18,7 @@ list1_items = ['SMART LEVEL', "6' LEVEL", 'MEASURING WHEEL', '1" % GUAGE', 'HAMM
 list2_items = ['PENS/HIGHLIGHTERS/PENICLS', 'TABLETS SMALL / LARGE', 'STICKY NOTES /  PAGE TABS', 'PAPER CLIPS / BINDER CLIPS', 'BINDER / FOLDERS / PAGE DIVIDERS', 'GRADES BOOKLET', 'EAR PLUGS / EAR PROTECTION', 'BUG SPRAY', 'WHITE OUT', 'SHEET PROTECTORS', 'GATORADE POWDER', 'GOJO HAND CLEANER', 'APPLE IPHONE CHARGER / CABLE', 'COOLING TOWEL', 'Type Custom Here', 'RUNNING BOARDS', 'HEADACHE RACK', 'TOOL BOX', 'LIGHTBAR /CONTROL BOX', 'TRUCK MODEL YEAR?', 'GLOVE SIZE', 'VEST SIZE', 'JACKET SIZE', 'SMART LEVEL BATT TYPE', 'TRUCK MODEL YEAR', 'CABLES NEEDED']
 default_dropdown = ['HAVE', 'NEED']
 
-st.title("Inspector Request Form")
+st.title("Inspector Supplies Request Form")
 
 # --- Sidebar Inputs ---
 with st.sidebar:
@@ -96,12 +96,8 @@ def generate_pdf(name, date, notes, list1, list2, customs):
     return pdf
 
 # --- Download Button ---
-from io import BytesIO
-
-pdf_buffer = BytesIO()
 pdf = generate_pdf(name, date, notes, list1_selections, list2_selections, custom_items)
-pdf.output(pdf_buffer)
-pdf_buffer.seek(0)
+pdf_bytes = pdf.output(dest='S').encode('latin-1')
 
 file_name = f"{name.lower().replace(' ', '_')}.request.{date.strftime('%Y-%m-%d')}.pdf"
-st.download_button("📄 Download PDF Receipt", data=pdf_buffer, file_name=file_name, mime="application/pdf")
+st.download_button("📄 Download PDF Receipt", data=pdf_bytes, file_name=file_name, mime="application/pdf")
