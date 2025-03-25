@@ -5,12 +5,12 @@ from datetime import datetime
 
 # --- Custom Dropdowns for Specific Items ---
 custom_dropdown_map = {
-    "GLOVE SIZE": ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'],
-    "VEST SIZE": ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'],
-    "JACKET SIZE": ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'],
-    "SMART LEVEL BATT TYPE": ['AA', 'AAA', '9V'],
-    "TRUCK MODEL YEAR": ['2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026', '2027', '2028'],
-    "CABLES NEEDED": ['USB C to USB C', 'USB A to USB C', 'USB C to Lightning', 'USB A to Lightning']
+    "GLOVE SIZE": ['HAVE', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'],
+    "VEST SIZE": ['HAVE', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'],
+    "JACKET SIZE": ['HAVE', 'S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'],
+    "SMART LEVEL BATT TYPE": ['HAVE', 'AA', 'AAA', '9V'],
+    "TRUCK MODEL YEAR": ['HAVE', '2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026', '2027', '2028'],
+    "CABLES NEEDED": ['HAVE', 'USB C to USB C', 'USB A to USB C', 'USB C to Lightning', 'USB A to Lightning']
 }
 
 # --- Final Cleaned Lists ---
@@ -18,13 +18,12 @@ list1_items = ['SMART LEVEL', "6' LEVEL", 'MEASURING WHEEL', '1" % GUAGE', 'HAMM
 list2_items = ['PENS/HIGHLIGHTERS/PENICLS', 'TABLETS SMALL / LARGE', 'STICKY NOTES /  PAGE TABS', 'PAPER CLIPS / BINDER CLIPS', 'BINDER / FOLDERS / PAGE DIVIDERS', 'GRADES BOOKLET', 'EAR PLUGS / EAR PROTECTION', 'BUG SPRAY', 'WHITE OUT', 'SHEET PROTECTORS', 'GATORADE POWDER', 'GOJO HAND CLEANER', 'APPLE IPHONE CHARGER / CABLE', 'COOLING TOWEL', 'Type Custom Here', 'RUNNING BOARDS', 'HEADACHE RACK', 'TOOL BOX', 'LIGHTBAR /CONTROL BOX', 'TRUCK MODEL YEAR?', 'GLOVE SIZE', 'VEST SIZE', 'JACKET SIZE', 'SMART LEVEL BATT TYPE', 'TRUCK MODEL YEAR', 'CABLES NEEDED']
 default_dropdown = ['HAVE', 'NEED']
 
-st.title("Inspector Supplies Request Form")
+st.title("Inspector Request Form")
 
-# --- Sidebar Inputs ---
-with st.sidebar:
-    name = st.text_input("Your Name")
-    date = st.date_input("Date", value=datetime.today())
-    notes = st.text_area("Additional Notes")
+# --- Moved Name/Date/Notes into main body for mobile compatibility ---
+name = st.text_input("Your Name")
+date = st.date_input("Date", value=datetime.today())
+notes = st.text_area("Additional Notes")
 
 st.header("Request Items")
 
@@ -99,5 +98,5 @@ def generate_pdf(name, date, notes, list1, list2, customs):
 pdf = generate_pdf(name, date, notes, list1_selections, list2_selections, custom_items)
 pdf_bytes = pdf.output(dest='S').encode('latin-1')
 
-file_name = f"{name.lower().replace(' ', '_')}.request.{date.strftime('%Y-%m-%d')}.pdf"
-st.download_button("📄 Download PDF Receipt", data=pdf_bytes, file_name=file_name, mime="application/pdf")
+file_name = f"{Inspector.name.lower().replace(' ', '_')}.request.{date.strftime('%Y-%m-%d')}.pdf"
+st.download_button("📄 Download and Save PDF Receipt", data=pdf_bytes, file_name=file_name, mime="application/pdf")
