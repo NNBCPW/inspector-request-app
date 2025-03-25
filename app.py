@@ -3,21 +3,24 @@ import streamlit as st
 from fpdf import FPDF
 from datetime import datetime
 
-# --- 🔧 MANUAL ITEM ADDITIONS HERE (Optional) ---
-custom_items_config = {
-    "TRUCK MODEL YEAR": ["2018", "2019", "2020", "2021", "2022", "2023"],
-    "JACKET SIZE": ["SM", "MED", "LARGE", "XL", "XXL"],
-    "COOLING TOWEL": ["HAVE", "NEED"]
+# --- Custom Dropdowns for Specific Items ---
+custom_dropdown_map = {
+    "GLOVE SIZE": ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'],
+    "VEST SIZE": ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'],
+    "JACKET SIZE": ['S', 'M', 'L', 'XL', '2XL', '3XL', '4XL', '5XL'],
+    "SMART LEVEL BATT TYPE": ['AA', 'AAA', '9V'],
+    "TRUCK MODEL YEAR": ['2017', '2018', '2019', '2020', '2021', '2022', '2023', '2024', '2025', '2026', '2027', '2028'],
+    "CABLES NEEDED": ['USB C to USB C', 'USB A to USB C', 'USB C to Lightning', 'USB A to Lightning']
 }
 
-# --- Cleaned Embedded Item Lists ---
+# --- Final Cleaned Lists ---
 list1_items = ['SMART LEVEL', "6' LEVEL", 'MEASURING WHEEL', '1" % GUAGE', 'HAMMER CLAW / SLEDGE', 'MEASURING TAPE', 'THEMOMETER', 'BLANK', 'RUBBER BOOTS', "6' FOLDING RULE", 'HARD HAT SUN VISOR', 'TYPE CUSTOM HERE', 'TAPE MEASURE', 'SAFETY BELT', 'HARD HAT', 'GLOVES 2 TYPES', 'SAFETY GLASSES', 'STRING LINE', 'CHAINING PINS', 'PAINT WAND', 'CLEANING SPRAY TOWELS', 'SMART LEVEL BATTERIES', 'SUNGLASSES', 'HIGH VIS WINTER JACKET/COAT', 'HIGH VIS / REFLECTIVE RAIN SUIT', 'HIGH VIS JACKET', 'SHOVELS', '12" ENGINEERING SCALE', 'BROOM', 'LOGITECH BLUETOOTH MOUSE']
-list2_items = ['PENS/HIGHLIGHTERS/PENICLS', 'TABLETS SMALL / LARGE', 'STICKY NOTES /  PAGE TABS', 'PAPER CLIPS / BINDER CLIPS', 'BINDER / FOLDERS / PAGE DIVIDERS', 'GRADES BOOKLET', 'EAR PLUGS / EAR PROTECTION', 'BUG SPRAY', 'WHITE OUT', 'SHEET PROTECTORS', 'GATORADE POWDER', 'GOJO HAND CLEANER', 'APPLE IPHONE CHARGER / CABLE', 'GLOVE SIZE', 'VEST SIZE', 'JACKET SIZE', 'SMART LEVEL BATT TYPE', 'COOLING TOWEL', 'Type Custom Here', 'RUNNING BOARDS', 'HEADACHE RACK', 'TOOL BOX', 'LIGHTBAR /CONTROL BOX', 'TRUCK MODEL YEAR?']
-dropdown_options = ['2018', 'AAA', 'HAVE', 'LARGE', 'MED', 'XL']
+list2_items = ['PENS/HIGHLIGHTERS/PENICLS', 'TABLETS SMALL / LARGE', 'STICKY NOTES /  PAGE TABS', 'PAPER CLIPS / BINDER CLIPS', 'BINDER / FOLDERS / PAGE DIVIDERS', 'GRADES BOOKLET', 'EAR PLUGS / EAR PROTECTION', 'BUG SPRAY', 'WHITE OUT', 'SHEET PROTECTORS', 'GATORADE POWDER', 'GOJO HAND CLEANER', 'APPLE IPHONE CHARGER / CABLE', 'COOLING TOWEL', 'Type Custom Here', 'RUNNING BOARDS', 'HEADACHE RACK', 'TOOL BOX', 'LIGHTBAR /CONTROL BOX', 'TRUCK MODEL YEAR?', 'GLOVE SIZE', 'VEST SIZE', 'JACKET SIZE', 'SMART LEVEL BATT TYPE', 'TRUCK MODEL YEAR', 'CABLES NEEDED']
+default_dropdown = ['HAVE', 'NEED']
 
 st.title("Inspector Request Form")
 
-# --- User Info ---
+# --- Sidebar Inputs ---
 with st.sidebar:
     name = st.text_input("Your Name")
     date = st.date_input("Date", value=datetime.today())
@@ -29,22 +32,16 @@ st.header("Request Items")
 st.subheader("List 1 Items")
 list1_selections = {}
 for item in list1_items:
-    choice = st.selectbox(f"{item}", options=dropdown_options, key=f"list1_{item}")
+    choice = st.selectbox(f"{item}", options=default_dropdown, key=f"list1_{item}")
     list1_selections[item] = choice
 
 # --- List 2 ---
 st.subheader("List 2 Items")
 list2_selections = {}
 for item in list2_items:
-    choice = st.selectbox(f"{item}", options=dropdown_options, key=f"list2_{item}")
+    options = custom_dropdown_map.get(item.upper(), default_dropdown)
+    choice = st.selectbox(f"{item}", options=options, key=f"list2_{item}")
     list2_selections[item] = choice
-
-# --- Manual Items (Optional) ---
-st.subheader("Additional Manual Items")
-manual_selections = {}
-for item, options in custom_items_config.items():
-    choice = st.selectbox(f"{item}", options=options, key=f"manual_{item}")
-    manual_selections[item] = choice
 
 # --- Custom Items ---
 st.subheader("Custom Items")
@@ -54,8 +51,8 @@ for i in range(1, 4):
     if custom:
         custom_items.append(custom)
 
-# --- Generate PDF ---
-def generate_pdf(name, date, notes, list1, list2, manual, customs):
+# --- PDF Generator ---
+def generate_pdf(name, date, notes, list1, list2, customs):
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
@@ -81,15 +78,6 @@ def generate_pdf(name, date, notes, list1, list2, manual, customs):
         if val.upper() != "HAVE":
             pdf.cell(200, 10, txt=f"- {item}: {val}", ln=True)
 
-    if manual:
-        pdf.ln(3)
-        pdf.set_font("Arial", style="B", size=12)
-        pdf.cell(200, 10, txt="Additional Manual Items:", ln=True)
-        pdf.set_font("Arial", size=12)
-        for item, val in manual.items():
-            if val.upper() != "HAVE":
-                pdf.cell(200, 10, txt=f"- {item}: {val}", ln=True)
-
     if customs:
         pdf.ln(3)
         pdf.set_font("Arial", style="B", size=12)
@@ -107,9 +95,9 @@ def generate_pdf(name, date, notes, list1, list2, manual, customs):
 
     return pdf
 
-# --- Save Button ---
+# --- Download Button ---
 if st.button("📄 Download PDF Receipt"):
-    pdf = generate_pdf(name, date, notes, list1_selections, list2_selections, manual_selections, custom_items)
+    pdf = generate_pdf(name, date, notes, list1_selections, list2_selections, custom_items)
     pdf_output = "inspector_request.pdf"
     pdf.output(pdf_output)
     with open(pdf_output, "rb") as f:
