@@ -7,13 +7,13 @@ from email.message import EmailMessage
 
 # --- Item Lists ---
 list1_items = [
-    "SMART LEVEL", "6' LEVEL", "MEASURING WHEEL", "1\" % GUAGE", "HAMMER CLAW / SLEDGE",
+    "SMART LEVEL", "6' LEVEL", "MEASURING WHEEL", "1" % GUAGE", "HAMMER CLAW / SLEDGE",
     "MEASURING TAPE", "THERMOMETER", "BLANK", "RUBBER BOOTS", "6' FOLDING RULE",
     "HARD HAT SUN VISOR", "TYPE CUSTOM HERE", "TAPE MEASURE", "SAFETY BELT", "HARD HAT",
     "GLOVES 2 TYPES", "SAFETY GLASSES", "STRING LINE", "CHAINING PINS", "PAINT WAND",
     "CLEANING SPRAY TOWELS", "SMART LEVEL BATTERIES", "SUNGLASSES",
     "HIGH VIS WINTER JACKET/COAT", "HIGH VIS / REFLECTIVE RAIN SUIT",
-    "HIGH VIS JACKET", "SHOVELS", "12inch" "ENGINEERING SCALE", "BROOM", "LOGITECH BLUETOOTH MOUSE"
+    "HIGH VIS JACKET", "SHOVELS", "12" ENGINEERING SCALE", "BROOM", "LOGITECH BLUETOOTH MOUSE"
 ]
 
 list2_items = [
@@ -38,23 +38,13 @@ st.header("Request Items")
 st.subheader("List 1 Items")
 list1_selections = {}
 for item in list1_items:
-    col1, col2 = st.columns(2)
-    with col1:
-        need = st.checkbox("Need", key=f"need1_{item}")
-    with col2:
-        have = st.checkbox("Have", key=f"have1_{item}")
-    list1_selections[item] = "NEED" if need else "HAVE" if have else ""
+    list1_selections[item] = st.radio(f"{item}", ["", "HAVE", "NEED"], key=f"list1_{item}", horizontal=True)
 
 # List 2
 st.subheader("List 2 Items")
 list2_selections = {}
 for item in list2_items:
-    col1, col2 = st.columns(2)
-    with col1:
-        need = st.checkbox("Need", key=f"need2_{item}")
-    with col2:
-        have = st.checkbox("Have", key=f"have2_{item}")
-    list2_selections[item] = "NEED" if need else "HAVE" if have else ""
+    list2_selections[item] = st.radio(f"{item}", ["", "HAVE", "NEED"], key=f"list2_{item}", horizontal=True)
 
 # Custom entries
 st.subheader("Custom Items")
@@ -133,7 +123,7 @@ if st.button("📧 Submit and Email PDF"):
 
     try:
         with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-            smtp.login("nickbexarinspector@gmail.com", "szwg fmcv moih juf")
+            smtp.login("nickbexarinspector@gmail.com", "szwg fmcv moih jufh")
             smtp.send_message(msg)
         st.success(f"PDF emailed to: {', '.join(recipients)}")
     except Exception as e:
