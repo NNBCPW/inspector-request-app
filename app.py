@@ -112,7 +112,7 @@ if st.button("📧 Submit and Email PDF"):
     filename = f"{name.lower().replace(' ', '_')}.request.{date.strftime('%Y-%m-%d')}.pdf"
 
     msg = EmailMessage()
-    msg["Subject"] = "Inspector Request PDF"
+    msg["Subject"] = f"{name}.{date.strftime('%d.%m.%Y')}.suppliesrequestreceipt"
     msg["From"] = "nickbexarinspector@gmail.com"
     recipients = ["nicholas.nabholz@bexar.org"]
     if cc_email:
