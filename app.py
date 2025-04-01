@@ -7,46 +7,45 @@ from email.message import EmailMessage
 
 # --- Item Lists ---
 list1_items = [
-    "SMART LEVEL", "6' LEVEL", "MEASURING WHEEL", "1 %GUAGE", "HAMMER CLAW / SLEDGE",
-    "MEASURING TAPE", "THERMOMETER", "BLANK", "RUBBER BOOTS", "6' FOLDING RULE",
-    "HARD HAT SUN VISOR", "TYPE CUSTOM HERE", "TAPE MEASURE", "SAFETY BELT", "HARD HAT",
-    "GLOVES 2 TYPES", "SAFETY GLASSES", "STRING LINE", "CHAINING PINS", "PAINT WAND",
-    "CLEANING SPRAY TOWELS", "SMART LEVEL BATTERIES", "SUNGLASSES",
-    "HIGH VIS WINTER JACKET/COAT", "HIGH VIS / REFLECTIVE RAIN SUIT",
-    "HIGH VIS JACKET", "SHOVELS", "12" "ENGINEERING SCALE", "BROOM", "LOGITECH BLUETOOTH MOUSE"
+    "SMART LEVEL", "6' LEVEL", "MEASURING WHEEL", "1\" % GUAGE", "HAMMER CLAW / SLEDGE"
 ]
 
 list2_items = [
     "PENS/HIGHLIGHTERS/PENCILS", "TABLETS SMALL / LARGE", "STICKY NOTES / PAGE TABS",
-    "PAPER CLIPS / BINDER CLIPS", "BINDER / FOLDERS / PAGE DIVIDERS", "GRADES BOOKLET",
-    "EAR PLUGS / EAR PROTECTION", "BUG SPRAY", "WHITE OUT", "SHEET PROTECTORS",
-    "GATORADE POWDER", "GOJO HAND CLEANER", "APPLE IPHONE CHARGER / CABLE",
-    "GLOVE SIZE", "VEST SIZE", "JACKET SIZE", "SMART LEVEL BATT TYPE", "COOLING TOWEL",
-    "Type Custom Here", "RUNNING BOARDS", "HEADACHE RACK", "TOOL BOX",
-    "LIGHTBAR /CONTROL BOX", "TRUCK MODEL YEAR", "CABLES NEEDED"
+    "GLOVE SIZE", "VEST SIZE", "CABLES NEEDED", "TRUCK MODEL YEAR"
 ]
 
-# --- UI ---
 st.title("Inspector Request Form")
 
 name = st.text_input("Your Name")
 date = st.date_input("Date", value=datetime.today())
 
-st.header("Request Items")
+# --- Button-style selection ---
+def button_pair(item):
+    col1, col2 = st.columns(2)
+    if f"{item}_choice" not in st.session_state:
+        st.session_state[f"{item}_choice"] = ""
+    with col1:
+        if st.button(f"HAVE - {item}", key=f"{item}_have"):
+            st.session_state[f"{item}_choice"] = "HAVE"
+    with col2:
+        if st.button(f"NEED - {item}", key=f"{item}_need"):
+            st.session_state[f"{item}_choice"] = "NEED"
+    return st.session_state[f"{item}_choice"]
 
-# List 1
+# --- List 1 ---
 st.subheader("List 1 Items")
 list1_selections = {}
 for item in list1_items:
-    list1_selections[item] = st.radio(f"{item}", ["", "HAVE", "NEED"], key=f"list1_{item}", horizontal=True)
+    list1_selections[item] = button_pair(item)
 
-# List 2
+# --- List 2 ---
 st.subheader("List 2 Items")
 list2_selections = {}
 for item in list2_items:
-    list2_selections[item] = st.radio(f"{item}", ["", "HAVE", "NEED"], key=f"list2_{item}", horizontal=True)
+    list2_selections[item] = button_pair(item)
 
-# Custom entries
+# --- Custom Items ---
 st.subheader("Custom Items")
 custom_items = []
 for i in range(1, 4):
@@ -54,15 +53,12 @@ for i in range(1, 4):
     if val:
         custom_items.append(val)
 
-# Notes
+# --- Notes and optional CC ---
 st.subheader("Additional Notes")
 notes = st.text_area("Type any extra notes here")
+cc_email = st.text_input("Optional: CC another email")
 
-# Optional email
-st.subheader("Optional: CC another email")
-cc_email = st.text_input("Additional recipient (optional)")
-
-# PDF generator
+# --- PDF Generator ---
 def generate_pdf(name, date, notes, list1, list2, customs):
     pdf = FPDF()
     pdf.add_page()
@@ -77,7 +73,7 @@ def generate_pdf(name, date, notes, list1, list2, customs):
     pdf.cell(200, 10, txt="List 1 Items Needed:", ln=True)
     pdf.set_font("Arial", size=12)
     for item, val in list1.items():
-        if val.upper() == "NEED":
+        if val == "NEED":
             pdf.cell(200, 10, txt=f"- {item}", ln=True)
 
     pdf.ln(3)
@@ -85,7 +81,7 @@ def generate_pdf(name, date, notes, list1, list2, customs):
     pdf.cell(200, 10, txt="List 2 Items Needed:", ln=True)
     pdf.set_font("Arial", size=12)
     for item, val in list2.items():
-        if val.upper() == "NEED":
+        if val == "NEED":
             pdf.cell(200, 10, txt=f"- {item}", ln=True)
 
     if customs:
@@ -105,7 +101,7 @@ def generate_pdf(name, date, notes, list1, list2, customs):
 
     return pdf
 
-# Send email
+# --- Email PDF ---
 if st.button("📧 Submit and Email PDF"):
     pdf = generate_pdf(name, date, notes, list1_selections, list2_selections, custom_items)
     pdf_bytes = pdf.output(dest="S").encode("latin-1")
