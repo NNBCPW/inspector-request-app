@@ -5,45 +5,49 @@ from datetime import datetime
 import smtplib
 from email.message import EmailMessage
 
-# --- Item Lists ---
+# --- Items ---
 list1_items = [
     "SMART LEVEL", "6' LEVEL", "MEASURING WHEEL", "1\" % GUAGE", "HAMMER CLAW / SLEDGE"
 ]
 
 list2_items = [
-    "PENS/HIGHLIGHTERS/PENCILS", "TABLETS SMALL / LARGE", "STICKY NOTES / PAGE TABS",
-    "GLOVE SIZE", "VEST SIZE", "CABLES NEEDED", "TRUCK MODEL YEAR"
+    "TOOL BOX", "LIGHTBAR /CONTROL BOX", "TRUCK MODEL YEAR", "CABLES NEEDED"
 ]
 
+st.set_page_config(page_title="Inspector Request", layout="centered")
 st.title("Inspector Request Form")
 
 name = st.text_input("Your Name")
 date = st.date_input("Date", value=datetime.today())
 
-# --- Button-style selection ---
-def button_pair(item):
+# --- Button Pair Function ---
+def toggle_buttons(item_key):
+    if f"{item_key}_selection" not in st.session_state:
+        st.session_state[f"{item_key}_selection"] = None
+
     col1, col2 = st.columns(2)
-    if f"{item}_choice" not in st.session_state:
-        st.session_state[f"{item}_choice"] = ""
     with col1:
-        if st.button(f"HAVE - {item}", key=f"{item}_have"):
-            st.session_state[f"{item}_choice"] = "HAVE"
+        if st.button("✅ HAVE" if st.session_state[f"{item_key}_selection"] == "HAVE" else "HAVE", key=f"{item_key}_have"):
+            st.session_state[f"{item_key}_selection"] = "HAVE"
     with col2:
-        if st.button(f"NEED - {item}", key=f"{item}_need"):
-            st.session_state[f"{item}_choice"] = "NEED"
-    return st.session_state[f"{item}_choice"]
+        if st.button("✅ NEED" if st.session_state[f"{item_key}_selection"] == "NEED" else "NEED", key=f"{item_key}_need"):
+            st.session_state[f"{item_key}_selection"] = "NEED"
+
+    return st.session_state[f"{item_key}_selection"]
 
 # --- List 1 ---
 st.subheader("List 1 Items")
 list1_selections = {}
 for item in list1_items:
-    list1_selections[item] = button_pair(item)
+    st.markdown(f"**{item}**")
+    list1_selections[item] = toggle_buttons(item.replace(" ", "_").lower())
 
 # --- List 2 ---
 st.subheader("List 2 Items")
 list2_selections = {}
 for item in list2_items:
-    list2_selections[item] = button_pair(item)
+    st.markdown(f"**{item}**")
+    list2_selections[item] = toggle_buttons(item.replace(" ", "_").lower())
 
 # --- Custom Items ---
 st.subheader("Custom Items")
@@ -53,7 +57,7 @@ for i in range(1, 4):
     if val:
         custom_items.append(val)
 
-# --- Notes and optional CC ---
+# --- Notes and Email ---
 st.subheader("Additional Notes")
 notes = st.text_area("Type any extra notes here")
 cc_email = st.text_input("Optional: CC another email")
@@ -101,7 +105,7 @@ def generate_pdf(name, date, notes, list1, list2, customs):
 
     return pdf
 
-# --- Email PDF ---
+# --- Submit & Email ---
 if st.button("📧 Submit and Email PDF"):
     pdf = generate_pdf(name, date, notes, list1_selections, list2_selections, custom_items)
     pdf_bytes = pdf.output(dest="S").encode("latin-1")
