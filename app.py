@@ -36,14 +36,14 @@ st.subheader("List 1 Items")
 list1_selections = {}
 for item in list1_items:
     st.markdown(f"**{item}**")
-    list1_selections[item] = toggle_buttons(item.replace(" ", "_").lower())
+    list1_selections[item] = toggle_buttons(f"list1_" + item.replace(" ", "_").lower())
 
 # --- List 2 ---
 st.subheader("List 2 Items")
 list2_selections = {}
 for item in list2_items:
     st.markdown(f"**{item}**")
-    list2_selections[item] = toggle_buttons(item.replace(" ", "_").lower())
+    list2_selections[item] = toggle_buttons(f"list2_" + item.replace(" ", "_").lower())
 
 # --- Custom Items ---
 st.subheader("Custom Items")
