@@ -29,8 +29,14 @@ list2_items = [
 st.set_page_config(page_title="Inspector Supplies Request", layout="centered")
 st.title("Inspector Request Form")
 
+date = datetime.today()
 name = st.text_input("Your Name")
-date = st.date_input("Date", value=datetime.today())
+
+col1, col2 = st.columns([1, 2])
+with col1:
+    truck_model_year = st.text_input("Model Year", max_chars=4)
+with col2:
+    unit_number = st.text_input("Unit Number", max_chars=8)
 
 # --- Key Sanitizer ---
 def safe_key(prefix, item):
@@ -67,13 +73,6 @@ for item in list2_items:
     st.markdown(f"**{item}**")
     key = safe_key("list2", item)
     list2_selections[item] = toggle_buttons(key)
-
-# --- Truck Info ---
-st.subheader("Truck Model Year")
-truck_model_year = st.text_input("Enter Truck Model Year")
-
-st.subheader("Unit Number")
-unit_number = st.text_input("Enter Unit Number")
 
 # --- Custom Items ---
 st.subheader("Custom Items")
