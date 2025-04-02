@@ -23,8 +23,7 @@ list2_items = [
     'GATORADE POWDER OR SIMILAR', 'GOJO HAND CLEANER OR CLEANING WIPES',
     'APPLE IPHONE CHARGER / CABLE', 'GLOVE SIZE', 'VEST SIZE', 'JACKET SIZE',
     'USB C CABLE AND BRICK', 'SMART LEVEL BATT TYPE', 'COOLING TOWEL', 'PLACE HOLDER C',
-    'RUNNING BOARDS', 'HEADACHE RACK', 'TOOL BOX', 'LIGHTBAR /CONTROL BOX',
-    'TRUCK MODEL YEAR', 'CABLES NEEDED'
+    'RUNNING BOARDS', 'HEADACHE RACK', 'TOOL BOX', 'LIGHTBAR /CONTROL BOX'
 ]
 
 st.set_page_config(page_title="Inspector Supplies Request", layout="centered")
@@ -69,6 +68,14 @@ for item in list2_items:
     key = safe_key("list2", item)
     list2_selections[item] = toggle_buttons(key)
 
+# --- Truck Model Year ---
+st.subheader("Truck Model Year")
+truck_model_year = st.text_input("Enter Truck Model Year")
+
+# --- Cables Needed ---
+st.subheader("Cables Needed")
+cables_needed = st.text_input("Enter Cables Needed")
+
 # --- Custom Items ---
 st.subheader("Custom Items")
 custom_items = []
@@ -83,7 +90,7 @@ notes = st.text_area("Type any extra notes here")
 cc_email = st.text_input("Optional: CC type another email here")
 
 # --- PDF Generator ---
-def generate_pdf(name, date, notes, list1, list2, customs):
+def generate_pdf(name, date, notes, list1, list2, customs, truck_year, cables):
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
@@ -91,6 +98,10 @@ def generate_pdf(name, date, notes, list1, list2, customs):
     pdf.ln(5)
     pdf.cell(200, 10, txt=f"Name: {name}", ln=True)
     pdf.cell(200, 10, txt=f"Date: {date.strftime('%Y-%m-%d')}", ln=True)
+    if truck_year:
+        pdf.cell(200, 10, txt=f"Truck Model Year: {truck_year}", ln=True)
+    if cables:
+        pdf.cell(200, 10, txt=f"Cables Needed: {cables}", ln=True)
     pdf.ln(5)
 
     pdf.set_font("Arial", style="B", size=12)
@@ -127,7 +138,7 @@ def generate_pdf(name, date, notes, list1, list2, customs):
 
 # --- Submit & Email ---
 if st.button("📧 Submit and Email PDF"):
-    pdf = generate_pdf(name, date, notes, list1_selections, list2_selections, custom_items)
+    pdf = generate_pdf(name, date, notes, list1_selections, list2_selections, custom_items, truck_model_year, cables_needed)
     pdf_bytes = pdf.output(dest="S").encode("latin-1")
     filename = f"{name.lower().replace(' ', '_')}.request.{date.strftime('%Y-%m-%d')}.pdf"
 
