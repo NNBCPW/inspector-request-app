@@ -32,11 +32,13 @@ st.title("Inspector Request Form")
 date = datetime.today()
 name = st.text_input("Your Name")
 
-col1, col2 = st.columns([1, 2])
+col1, col2, col3 = st.columns([1, 1, 1])
 with col1:
     truck_model_year = st.text_input("Model Year", max_chars=4)
 with col2:
     unit_number = st.text_input("Unit Number", max_chars=8)
+with col3:
+    truck_make = st.selectbox("Make", ["", "Ford", "Chevy"])
 
 # --- Key Sanitizer ---
 def safe_key(prefix, item):
@@ -92,7 +94,7 @@ notes = st.text_area("Type any extra notes here")
 cc_email = st.text_input("Optional: CC type another email here")
 
 # --- PDF Generator ---
-def generate_pdf(name, date, notes, list1, list2, customs, truck_year, unit_number, cables):
+def generate_pdf(name, date, notes, list1, list2, customs, truck_year, unit_number, truck_make, cables):
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
@@ -104,6 +106,8 @@ def generate_pdf(name, date, notes, list1, list2, customs, truck_year, unit_numb
         pdf.cell(200, 10, txt=f"Truck Model Year: {truck_year}", ln=True)
     if unit_number:
         pdf.cell(200, 10, txt=f"Unit Number: {unit_number}", ln=True)
+    if truck_make:
+        pdf.cell(200, 10, txt=f"Truck Make: {truck_make}", ln=True)
     pdf.ln(5)
 
     pdf.set_font("Arial", style="B", size=12)
@@ -147,7 +151,7 @@ def generate_pdf(name, date, notes, list1, list2, customs, truck_year, unit_numb
 
 # --- Submit & Email ---
 if st.button("📧 Submit and Email PDF"):
-    pdf = generate_pdf(name, date, notes, list1_selections, list2_selections, custom_items, truck_model_year, unit_number, cables_needed)
+    pdf = generate_pdf(name, date, notes, list1_selections, list2_selections, custom_items, truck_model_year, unit_number, truck_make, cables_needed)
     pdf_bytes = pdf.output(dest="S").encode("latin-1")
     filename = f"{name.lower().replace(' ', '_')}.request.{date.strftime('%Y-%m-%d')}.pdf"
 
