@@ -1,20 +1,42 @@
-
 import streamlit as st
 from fpdf import FPDF
 from datetime import datetime
 import smtplib
 from email.message import EmailMessage
+import re
 
 # --- Items ---
-list1_items = ['SMART LEVEL', "6' LEVEL", 'MEASURING WHEEL', '1" % GUAGE', 'HAMMER CLAW / SLEDGE', 'MEASURING TAPE', 'THERMOMETER', 'PLACE HOLDER A', 'RUBBER BOOTS', "6' FOLDING RULE", 'HARD HAT SUN VISOR', 'PLACE HOLDER', 'TAPE MEASURE', 'SAFETY BELT', 'HARD HAT', 'GLOVES 2 TYPES', 'SAFETY GLASSES', 'STRING LINE', 'CHAINING PINS', 'PAINT WAND', 'CLEANING SPRAY TOWELS', 'SMART LEVEL BATTERIES', 'SUNGLASSES', 'HIGH VIS WINTER JACKET/COAT', 'HIGH VIS / REFLECTIVE RAIN SUIT', 'HIGH VIS JACKET', 'SHOVELS', '12" ENGINEERING SCALE', 'BROOM', 'LOGITECH BLUETOOTH MOUSE', 'WIRELESS KEYBOARD']
+list1_items = [
+    'SMART LEVEL', "6' LEVEL", 'MEASURING WHEEL', '1" % GUAGE', 'HAMMER CLAW / SLEDGE',
+    'MEASURING TAPE', 'THERMOMETER', 'PLACE HOLDER A', 'RUBBER BOOTS', "6' FOLDING RULE",
+    'HARD HAT SUN VISOR', 'PLACE HOLDER B', 'TAPE MEASURE', 'SAFETY BELT', 'HARD HAT',
+    'GLOVES 2 TYPES', 'SAFETY GLASSES', 'STRING LINE', 'CHAINING PINS', 'PAINT WAND',
+    'CLEANING SPRAY TOWELS', 'SMART LEVEL BATTERIES', 'SUNGLASSES', 'HIGH VIS WINTER JACKET/COAT',
+    'HIGH VIS / REFLECTIVE RAIN SUIT', 'HIGH VIS JACKET', 'SHOVELS', '12" ENGINEERING SCALE',
+    'BROOM', 'LOGITECH BLUETOOTH MOUSE', 'WIRELESS KEYBOARD'
+]
 
-list2_items = ['PENS/HIGHLIGHTERS/PENCILS', 'TABLETS SMALL / LARGE', 'STICKY NOTES / PAGE TABS', 'PAPER CLIPS / BINDER CLIPS', 'BINDER / FOLDERS / PAGE DIVIDERS', 'GRADES BOOKLET', 'EAR PLUGS / EAR PROTECTION', 'BUG SPRAY', 'WHITE OUT', 'SHEET PROTECTORS', 'GATORADE POWDER OR SIMILAR', 'GOJO HAND CLEANER OR CLEANING WIPES', 'APPLE IPHONE CHARGER / CABLE', 'GLOVE SIZE', 'VEST SIZE', 'JACKET SIZE', 'USB C CABLE AND BRICK', 'SMART LEVEL BATT TYPE', 'COOLING TOWEL', 'PLACE HOLDER B', 'RUNNING BOARDS', 'HEADACHE RACK', 'TOOL BOX', 'LIGHTBAR /CONTROL BOX', 'TRUCK MODEL YEAR', 'CABLES NEEDED']
+list2_items = [
+    'PENS/HIGHLIGHTERS/PENCILS', 'TABLETS SMALL / LARGE', 'STICKY NOTES / PAGE TABS',
+    'PAPER CLIPS / BINDER CLIPS', 'BINDER / FOLDERS / PAGE DIVIDERS', 'GRADES BOOKLET',
+    'EAR PLUGS / EAR PROTECTION', 'BUG SPRAY', 'WHITE OUT', 'SHEET PROTECTORS',
+    'GATORADE POWDER OR SIMILAR', 'GOJO HAND CLEANER OR CLEANING WIPES',
+    'APPLE IPHONE CHARGER / CABLE', 'GLOVE SIZE', 'VEST SIZE', 'JACKET SIZE',
+    'USB C CABLE AND BRICK', 'SMART LEVEL BATT TYPE', 'COOLING TOWEL', 'PLACE HOLDER C',
+    'RUNNING BOARDS', 'HEADACHE RACK', 'TOOL BOX', 'LIGHTBAR /CONTROL BOX',
+    'TRUCK MODEL YEAR', 'CABLES NEEDED'
+]
 
 st.set_page_config(page_title="Inspector Supplies Request", layout="centered")
 st.title("Inspector Request Form")
 
 name = st.text_input("Your Name")
 date = st.date_input("Date", value=datetime.today())
+
+# --- Key Sanitizer ---
+def safe_key(prefix, item):
+    safe_item = re.sub(r'[^a-zA-Z0-9]', '_', item).lower()
+    return f"{prefix}_{safe_item}"
 
 # --- Button Pair Function ---
 def toggle_buttons(item_key):
@@ -36,14 +58,16 @@ st.subheader("List 1 Items")
 list1_selections = {}
 for item in list1_items:
     st.markdown(f"**{item}**")
-    list1_selections[item] = toggle_buttons(f"list1_" + item.replace(" ", "_").lower())
+    key = safe_key("list1", item)
+    list1_selections[item] = toggle_buttons(key)
 
 # --- List 2 ---
 st.subheader("List 2 Items")
 list2_selections = {}
 for item in list2_items:
     st.markdown(f"**{item}**")
-    list2_selections[item] = toggle_buttons(f"list2_" + item.replace(" ", "_").lower())
+    key = safe_key("list2", item)
+    list2_selections[item] = toggle_buttons(key)
 
 # --- Custom Items ---
 st.subheader("Custom Items")
@@ -74,7 +98,7 @@ def generate_pdf(name, date, notes, list1, list2, customs):
     pdf.set_font("Arial", size=12)
     for item, val in list1.items():
         if val == "NEED":
-            pdf.cell(200, 10, txt=f"- {item}", ln=True)
+            pdf.multi_cell(0, 10, txt=f"- {item}")
 
     pdf.ln(3)
     pdf.set_font("Arial", style="B", size=12)
@@ -82,7 +106,7 @@ def generate_pdf(name, date, notes, list1, list2, customs):
     pdf.set_font("Arial", size=12)
     for item, val in list2.items():
         if val == "NEED":
-            pdf.cell(200, 10, txt=f"- {item}", ln=True)
+            pdf.multi_cell(0, 10, txt=f"- {item}")
 
     if customs:
         pdf.ln(3)
@@ -90,7 +114,7 @@ def generate_pdf(name, date, notes, list1, list2, customs):
         pdf.cell(200, 10, txt="Custom Items:", ln=True)
         pdf.set_font("Arial", size=12)
         for c in customs:
-            pdf.cell(200, 10, txt=f"- {c}", ln=True)
+            pdf.multi_cell(0, 10, txt=f"- {c}")
 
     if notes:
         pdf.ln(3)
@@ -108,7 +132,7 @@ if st.button("📧 Submit and Email PDF"):
     filename = f"{name.lower().replace(' ', '_')}.request.{date.strftime('%Y-%m-%d')}.pdf"
 
     msg = EmailMessage()
-    msg["Subject"] = f"{name}.{date.strftime('%d.%m.%Y')}.suppliesrequestreceipt"
+    msg["Subject"] = f"{name}.{date.strftime('%m.%d.%Y')}.suppliesrequestreceipt"
     msg["From"] = "nickbexarinspector@gmail.com"
     recipients = ["nicholas.nabholz@bexar.org"]
     if cc_email:
