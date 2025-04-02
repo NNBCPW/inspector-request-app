@@ -68,13 +68,12 @@ for item in list2_items:
     key = safe_key("list2", item)
     list2_selections[item] = toggle_buttons(key)
 
-# --- Truck Model Year ---
+# --- Truck Info ---
 st.subheader("Truck Model Year")
 truck_model_year = st.text_input("Enter Truck Model Year")
 
-# --- Cables Needed ---
-st.subheader("Cables Needed")
-cables_needed = st.text_input("Enter Cables Needed")
+st.subheader("Unit Number")
+unit_number = st.text_input("Enter Unit Number")
 
 # --- Custom Items ---
 st.subheader("Custom Items")
@@ -84,13 +83,17 @@ for i in range(1, 4):
     if val:
         custom_items.append(val)
 
+# --- Cables Needed ---
+st.subheader("Cables Needed")
+cables_needed = st.text_input("Enter Cables Needed")
+
 # --- Notes and Email ---
 st.subheader("Notes / Items not yet listed")
 notes = st.text_area("Type any extra notes here")
 cc_email = st.text_input("Optional: CC type another email here")
 
 # --- PDF Generator ---
-def generate_pdf(name, date, notes, list1, list2, customs, truck_year, cables):
+def generate_pdf(name, date, notes, list1, list2, customs, truck_year, unit_number, cables):
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
@@ -100,8 +103,8 @@ def generate_pdf(name, date, notes, list1, list2, customs, truck_year, cables):
     pdf.cell(200, 10, txt=f"Date: {date.strftime('%Y-%m-%d')}", ln=True)
     if truck_year:
         pdf.cell(200, 10, txt=f"Truck Model Year: {truck_year}", ln=True)
-    if cables:
-        pdf.cell(200, 10, txt=f"Cables Needed: {cables}", ln=True)
+    if unit_number:
+        pdf.cell(200, 10, txt=f"Unit Number: {unit_number}", ln=True)
     pdf.ln(5)
 
     pdf.set_font("Arial", style="B", size=12)
@@ -134,11 +137,18 @@ def generate_pdf(name, date, notes, list1, list2, customs, truck_year, cables):
         pdf.set_font("Arial", size=12)
         pdf.multi_cell(0, 10, txt=notes)
 
+    if cables:
+        pdf.ln(3)
+        pdf.set_font("Arial", style="B", size=12)
+        pdf.cell(200, 10, txt="Cables Needed:", ln=True)
+        pdf.set_font("Arial", size=12)
+        pdf.multi_cell(0, 10, txt=cables)
+
     return pdf
 
 # --- Submit & Email ---
 if st.button("📧 Submit and Email PDF"):
-    pdf = generate_pdf(name, date, notes, list1_selections, list2_selections, custom_items, truck_model_year, cables_needed)
+    pdf = generate_pdf(name, date, notes, list1_selections, list2_selections, custom_items, truck_model_year, unit_number, cables_needed)
     pdf_bytes = pdf.output(dest="S").encode("latin-1")
     filename = f"{name.lower().replace(' ', '_')}.request.{date.strftime('%Y-%m-%d')}.pdf"
 
