@@ -6,11 +6,11 @@ import smtplib
 from email.message import EmailMessage
 
 # --- Items ---
-list1_items = ['SMART LEVEL', "6' LEVEL", 'MEASURING WHEEL', '1" % GUAGE', 'HAMMER CLAW / SLEDGE', 'MEASURING TAPE', 'THERMOMETER', 'BLANK', 'RUBBER BOOTS', "6' FOLDING RULE", 'HARD HAT SUN VISOR', 'TYPE CUSTOM HERE', 'TAPE MEASURE', 'SAFETY BELT', 'HARD HAT', 'GLOVES 2 TYPES', 'SAFETY GLASSES', 'STRING LINE', 'CHAINING PINS', 'PAINT WAND', 'CLEANING SPRAY TOWELS', 'SMART LEVEL BATTERIES', 'SUNGLASSES', 'HIGH VIS WINTER JACKET/COAT', 'HIGH VIS / REFLECTIVE RAIN SUIT', 'HIGH VIS JACKET', 'SHOVELS', '12" ENGINEERING SCALE', 'BROOM', 'LOGITECH BLUETOOTH MOUSE']
+list1_items = ['SMART LEVEL', "6' LEVEL", 'MEASURING WHEEL', '1" % GUAGE', 'HAMMER CLAW / SLEDGE', 'MEASURING TAPE', 'THERMOMETER', 'PLACE HOLDER', 'RUBBER BOOTS', "6' FOLDING RULE", 'HARD HAT SUN VISOR', 'PLACE HOLDER', 'TAPE MEASURE', 'SAFETY BELT', 'HARD HAT', 'GLOVES 2 TYPES', 'SAFETY GLASSES', 'STRING LINE', 'CHAINING PINS', 'PAINT WAND', 'CLEANING SPRAY TOWELS', 'SMART LEVEL BATTERIES', 'SUNGLASSES', 'HIGH VIS WINTER JACKET/COAT', 'HIGH VIS / REFLECTIVE RAIN SUIT', 'HIGH VIS JACKET', 'SHOVELS', '12" ENGINEERING SCALE', 'BROOM', 'LOGITECH BLUETOOTH MOUSE', 'WIRELESS KEYBOARD']
 
-list2_items = ['PENS/HIGHLIGHTERS/PENCILS', 'TABLETS SMALL / LARGE', 'STICKY NOTES / PAGE TABS', 'PAPER CLIPS / BINDER CLIPS', 'BINDER / FOLDERS / PAGE DIVIDERS', 'GRADES BOOKLET', 'EAR PLUGS / EAR PROTECTION', 'BUG SPRAY', 'WHITE OUT', 'SHEET PROTECTORS', 'GATORADE POWDER', 'GOJO HAND CLEANER', 'APPLE IPHONE CHARGER / CABLE', 'GLOVE SIZE', 'VEST SIZE', 'JACKET SIZE', 'SMART LEVEL BATT TYPE', 'COOLING TOWEL', 'Type Custom Here', 'RUNNING BOARDS', 'HEADACHE RACK', 'TOOL BOX', 'LIGHTBAR /CONTROL BOX', 'TRUCK MODEL YEAR', 'CABLES NEEDED']
+list2_items = ['PENS/HIGHLIGHTERS/PENCILS', 'TABLETS SMALL / LARGE', 'STICKY NOTES / PAGE TABS', 'PAPER CLIPS / BINDER CLIPS', 'BINDER / FOLDERS / PAGE DIVIDERS', 'GRADES BOOKLET', 'EAR PLUGS / EAR PROTECTION', 'BUG SPRAY', 'WHITE OUT', 'SHEET PROTECTORS', 'GATORADE POWDER OR SIMILAR', 'GOJO HAND CLEANER OR CLEANING WIPES', 'APPLE IPHONE CHARGER / CABLE', 'GLOVE SIZE', 'VEST SIZE', 'JACKET SIZE', 'USB C CABLE AND BRICK', 'SMART LEVEL BATT TYPE', 'COOLING TOWEL', 'PLACE HOLDER', 'RUNNING BOARDS', 'HEADACHE RACK', 'TOOL BOX', 'LIGHTBAR /CONTROL BOX', 'TRUCK MODEL YEAR', 'CABLES NEEDED']
 
-st.set_page_config(page_title="Inspector Request", layout="centered")
+st.set_page_config(page_title="Inspector Supplies Request", layout="centered")
 st.title("Inspector Request Form")
 
 name = st.text_input("Your Name")
@@ -54,16 +54,16 @@ for i in range(1, 4):
         custom_items.append(val)
 
 # --- Notes and Email ---
-st.subheader("Additional Notes")
+st.subheader("Notes / Items not yet listed")
 notes = st.text_area("Type any extra notes here")
-cc_email = st.text_input("Optional: CC another email")
+cc_email = st.text_input("Optional: CC type another email here")
 
 # --- PDF Generator ---
 def generate_pdf(name, date, notes, list1, list2, customs):
     pdf = FPDF()
     pdf.add_page()
     pdf.set_font("Arial", size=12)
-    pdf.cell(200, 10, txt="Inspector Request Receipt", ln=True, align="C")
+    pdf.cell(200, 10, txt="Inspector Supply Request Receipt", ln=True, align="C")
     pdf.ln(5)
     pdf.cell(200, 10, txt=f"Name: {name}", ln=True)
     pdf.cell(200, 10, txt=f"Date: {date.strftime('%Y-%m-%d')}", ln=True)
